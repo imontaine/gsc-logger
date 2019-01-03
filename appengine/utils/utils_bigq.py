@@ -180,7 +180,7 @@ def stream_row_to_bigquery(site, rows):
                 tableId=convert_table_id(site),
                 body=insert_all_data).execute(num_retries=cfg.STREAM_RETRIES)
             break
-        except InternalTransientError:
+        except urlfetch_errors.InternalTransientError:
             log.info("An InternalTransientError occured while streaming to BQ. Retrying in 30 secs.")
             time.sleep(30)
             
