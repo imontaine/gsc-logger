@@ -6,7 +6,7 @@ import re, string
 
 import googleapiclient.discovery as discovery
 from googleapiclient.errors import HttpError
-import google.appengine.api.urlfetch_errors.InternalTransientError
+from google.appengine.api import urlfetch_errors
 
 import config as cfg
 
