@@ -73,8 +73,8 @@ def list_sites():
 #Main request to GSC
 # Credit: https://github.com/stephan765/Google-Search-Console-bulk-query/blob/master/search_console_query.py
 @rate_limit(400)
-def execute_request(service, property_uri, request, max_retries=5, wait_interval=4,
-                    retry_errors=(503, 500)):
+def execute_request(service, property_uri, request, max_retries=10, wait_interval=4,
+                    retry_errors=(503, 500, 429)):
     """
     Executes a searchanalytics request.
     Args:
