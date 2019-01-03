@@ -171,11 +171,18 @@ def stream_row_to_bigquery(site, rows):
         'rows': transform_rows(rows)
     }
     service = get_bq_service()
-    result =  service.tabledata().insertAll(
-        projectId=svcdata['project_id'],
-        datasetId=cfg.DATASET_ID,
-        tableId=convert_table_id(site),
-        body=insert_all_data).execute(num_retries=cfg.STREAM_RETRIES)
+    while True:
+        try:
+            result =  service.tabledata().insertAll(
+                projectId=svcdata['project_id'],
+                datasetId=cfg.DATASET_ID,
+                tableId=convert_table_id(site),
+                body=insert_all_data).execute(num_retries=cfg.STREAM_RETRIES)
+            break
+        except InternalTransientError:
+            log.info("An InternalTransientError occured while streaming to BQ. Retrying in 30 secs.")
+            time.sleep(30)
+            
         
     log.info(json.dumps(result))
     
