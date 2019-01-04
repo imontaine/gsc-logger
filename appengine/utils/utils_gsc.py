@@ -147,7 +147,7 @@ def load_site_data(site):
                     break
                 
             except HttpError as e:
-                log.error("Stream to Bigquery Error. ", e.content)
+                log.error("Stream to Bigquery Error. \n" + e.content)
                 break
         
         else:
