@@ -9,6 +9,7 @@ import logging
 import json
 import googleapiclient.discovery as discovery
 from googleapiclient.errors import HttpError
+from google.appengine.api import urlfetch_errors
 
 import config as cfg
 import utils.utils_auth as auth
@@ -101,6 +102,11 @@ def execute_request(service, property_uri, request, max_retries=10, wait_interva
                 time.sleep(wait_interval)
                 retries += 1
                 continue
+        except urlfetch_errors.DeadlineExceededError as err:
+            log.error("Request took more than 60 seconds. Retrying")
+            time.sleep(wait_interval)
+            retries += 1
+            continue
         break
 
     return response
