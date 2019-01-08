@@ -130,13 +130,15 @@ def load_site_data(site):
     
     service = get_gsc_service()
     
+    rowsSent = 0
+    
     while True:
 
         data = execute_request(service, site, query)
         if data and 'rows' in data:
             rows = data['rows']
             numRows = len(rows)
-            rowsSent = 0
+            
             
             try:
                 result = bigq.stream_row_to_bigquery(site, rows)
