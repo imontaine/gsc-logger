@@ -117,50 +117,50 @@ def load_site_data(site):
     data = None
     loaded = False
     
-    query = cfg.GSC_QUERY
+    for query in cfg.GSC_QUERY_LIST:
 
-    if db.last_date(site) == get_offset_date():
-        #Already loaded
-        log.info('Ignoring. Already run this day for site {0}.'.format(site))
-        return False
-        
-    query['startDate'] = get_offset_date()
-    query['endDate'] = get_offset_date()
-        
-    
-    service = get_gsc_service()
-    
-    rowsSent = 0
-    
-    while True:
+        if db.last_date(site) == get_offset_date():
+            #Already loaded
+            log.info('Ignoring. Already run this day for site {0}.'.format(site))
+            return False
 
-        data = execute_request(service, site, query)
-        if data and 'rows' in data:
-            rows = data['rows']
-            numRows = len(rows)
-            
-            
-            try:
-                result = bigq.stream_row_to_bigquery(site, rows)
-                log.info('Added {0} rows to {1}'.format(numRows,site))
-                rowsSent += numRows
-                loaded = True
-                
-                if numRows == 10000:
-                    query['startRow'] = int(rowsSent + 1)
-                    continue
-                else:
-                    if numRows and numRows > 0:
-                        db.add_entry(site, get_offset_date(),rowsSent)
+        query['startDate'] = get_offset_date()
+        query['endDate'] = get_offset_date()
+
+
+        service = get_gsc_service()
+
+        rowsSent = 0
+
+        while True:
+
+            data = execute_request(service, site, query)
+            if data and 'rows' in data:
+                rows = data['rows']
+                numRows = len(rows)
+
+
+                try:
+                    result = bigq.stream_row_to_bigquery(site, rows)
+                    log.info('Added {0} rows to {1}'.format(numRows,site))
+                    rowsSent += numRows
+                    loaded = True
+
+                    if numRows == 10000:
+                        query['startRow'] = int(rowsSent + 1)
+                        continue
+                    else:
+                        if numRows and numRows > 0:
+                            db.add_entry(site, get_offset_date(),rowsSent)
+                        break
+
+                except HttpError as e:
+                    log.error("Stream to Bigquery Error. \n" + e.content)
                     break
-                
-            except HttpError as e:
-                log.error("Stream to Bigquery Error. \n" + e.content)
+
+            else:
                 break
-        
-        else:
-            break
-        
+
     return loaded
         
 # Main Cron script.
