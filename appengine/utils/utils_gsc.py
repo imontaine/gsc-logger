@@ -123,13 +123,12 @@ def load_site_data(site):
             log.info('Ignoring. Already run this day for site {0}.'.format(site))
             return False
 
-    query['startDate'] = get_offset_date()
-    query['endDate'] = get_offset_date()
-
-
     service = get_gsc_service()
     
     for query in cfg.GSC_QUERY_LIST:
+        
+        query['startDate'] = get_offset_date()
+        query['endDate'] = get_offset_date()
         
         rowsSent = 0
 
