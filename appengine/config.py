@@ -23,10 +23,11 @@ TABLE_SCHEMA = [
                     {"type": "STRING", "name": "query"},
                     {"type": "STRING", "name": "page"},
                     {"type": "STRING", "name": "device"},
+                    {"type": "STRING", "name": "country"},
                     {"type": "INTEGER", "name": "clicks"},
                     {"type": "INTEGER", "name": "impressions"}, 
                     {"type": "FLOAT", "name": "ctr"}, 
-                    {"type": "FLOAT", "name": "position"}
+                    {"type": "FLOAT", "name": "position"},
                 ]
 
 # Friendly name prefix for tables.
@@ -45,14 +46,15 @@ HIDE_HOMEPAGE = False
 GSC_TIMEZONE = 'Australia/Sydney'
 
 # Base query for GSC.  startDate and endDate are replaced upon call.
-GSC_QUERY = {
+GSC_QUERY_LIST = [{
                  "startDate": "2017-07-01",
                  "endDate": "2017-07-31",
                  "dimensions": [
                   "query",
                   "date",
                   "page",
-                  "device"
+                  "device",
+                  "country"
                  ],
                  "dimensionFilterGroups": [
                   {
@@ -65,5 +67,29 @@ GSC_QUERY = {
                   }
                  ],
                  "rowLimit": 10000
+                },
+  
+                {
+                 "startDate": "2017-07-01",
+                 "endDate": "2017-07-31",
+                 "dimensions": [
+                  "query",
+                  "date",
+                  "page",
+                  "device",
+                  "country"
+                 ],
+                 "dimensionFilterGroups": [
+                  {
+                   "filters": [
+                    { 
+                     "dimension": "country",
+                     "expression": "nzl"
+                    }
+                   ]
+                  }
+                 ],
+                 "rowLimit": 10000
                 }
+                ]
 
