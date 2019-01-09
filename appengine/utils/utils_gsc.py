@@ -116,20 +116,21 @@ def load_site_data(site):
     
     data = None
     loaded = False
+    allSiteRows = 0
     
-    for query in cfg.GSC_QUERY_LIST:
-
-        if db.last_date(site) == get_offset_date():
+    if db.last_date(site) == get_offset_date():
             #Already loaded
             log.info('Ignoring. Already run this day for site {0}.'.format(site))
             return False
 
-        query['startDate'] = get_offset_date()
-        query['endDate'] = get_offset_date()
+    query['startDate'] = get_offset_date()
+    query['endDate'] = get_offset_date()
 
 
-        service = get_gsc_service()
-
+    service = get_gsc_service()
+    
+    for query in cfg.GSC_QUERY_LIST:
+        
         rowsSent = 0
 
         while True:
@@ -146,21 +147,20 @@ def load_site_data(site):
                     rowsSent += numRows
                     loaded = True
 
-                    if numRows == 10000:
+                    if numRows > 0:
                         query['startRow'] = int(rowsSent + 1)
                         continue
                     else:
-                        if numRows and numRows > 0:
-                            db.add_entry(site, get_offset_date(),rowsSent)
+                        allSiteRows += rowsSent
                         break
 
                 except HttpError as e:
                     log.error("Stream to Bigquery Error. \n" + e.content)
-                    break
+                    return False
 
             else:
                 break
-
+    db.add_entry(site, get_offset_date(),allSiteRows)
     return loaded
         
 # Main Cron script.
