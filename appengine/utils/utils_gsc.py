@@ -144,23 +144,18 @@ def load_site_data(site):
                     result = bigq.stream_row_to_bigquery(site, rows)
                     log.info('Added {0} rows to {1}'.format(numRows,site))
                     rowsSent += numRows
+                    query['startRow'] = int(rowsSent + 1)
                     loaded = True
-
-                    if numRows > 0:
-                        query['startRow'] = int(rowsSent + 1)
-                        continue
-                    else:
-                        allSiteRows += rowsSent
-                        break
 
                 except HttpError as e:
                     log.error("Stream to Bigquery Error. \n" + e.content)
                     return False
 
             else:
-                log.error("Request did not return rows. \n" + json.dumps(data))
+                allSiteRows += rowsSent
+                log.info("No rows left. Start row of last request was " + query['startRow'] + ". Request was: \n" + json.dumps(query))
+                db.add_entry(site, get_offset_date(),allSiteRows)
                 break
-    db.add_entry(site, get_offset_date(),allSiteRows)
     return loaded
         
 # Main Cron script.
