@@ -129,6 +129,7 @@ def load_site_data(site):
         
         query['startDate'] = get_offset_date()
         query['endDate'] = get_offset_date()
+        query['startRow'] = 0
         
         rowsSent = 0
 
@@ -153,9 +154,13 @@ def load_site_data(site):
 
             else:
                 allSiteRows += rowsSent
-                log.info("No rows left. Start row of last request was " + str(query['startRow']) + ". Request was: \n" + json.dumps(query))
-                db.add_entry(site, get_offset_date(),allSiteRows)
+                log.info("No rows left. Start row of last request was " + str(query['startRow']) + ".")           
                 break
+                
+    if allSiteRows > 0
+        db.add_entry(site, get_offset_date(),allSiteRows)
+    else:
+        log.info("No rows found for this site.")
     return loaded
         
 # Main Cron script.
