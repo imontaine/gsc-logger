@@ -157,7 +157,7 @@ def load_site_data(site):
                 log.info("No rows left. Start row of last request was " + str(query['startRow']) + ".")           
                 break
                 
-    if allSiteRows > 0
+    if allSiteRows > 0:
         db.add_entry(site, get_offset_date(),allSiteRows)
     else:
         log.info("No rows found for this site.")
