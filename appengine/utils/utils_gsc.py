@@ -153,7 +153,7 @@ def load_site_data(site):
 
             else:
                 allSiteRows += rowsSent
-                log.info("No rows left. Start row of last request was " + query['startRow'] + ". Request was: \n" + json.dumps(query))
+                log.info("No rows left. Start row of last request was " + str(query['startRow']) + ". Request was: \n" + json.dumps(query))
                 db.add_entry(site, get_offset_date(),allSiteRows)
                 break
     return loaded
