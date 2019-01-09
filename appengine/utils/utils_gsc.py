@@ -158,7 +158,7 @@ def load_site_data(site):
                     return False
 
             else:
-                log.info("Request did not return rows. \n" + data)
+                log.error("Request did not return rows. \n" + json.dumps(data))
                 break
     db.add_entry(site, get_offset_date(),allSiteRows)
     return loaded
