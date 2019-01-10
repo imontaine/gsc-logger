@@ -205,6 +205,7 @@ def transform_rows(rows):
                             'date' : row['keys'][1],
                             'page' : row['keys'][2],
                             'device' : row['keys'][3],
+                            'country' :row['keys][4],
                             'impressions' : row['impressions'],
                             'clicks' : row['clicks'],
                             'ctr' : row['ctr'],
